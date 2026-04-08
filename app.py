@@ -100,10 +100,35 @@ def upload(slot):
     flash(f"Updated {slot} successfully!", "success")
     return redirect(url_for('admin'))
 
+@app.route('/remove/<slot>', methods=['POST'])
+def remove(slot):
+    if slot not in ["300x600", "300x250"]:
+        flash("Invalid slot", "error")
+        return redirect(url_for('admin'))
+        
+    data = load_data()
+    # Remove old video if exists
+    if data[slot].get("url", "").startswith("/uploads/"):
+        old_file = os.path.join(UPLOAD_FOLDER, os.path.basename(data[slot]["url"]))
+        if os.path.exists(old_file):
+            try:
+                os.remove(old_file)
+            except:
+                pass
+                
+    data[slot]["url"] = ""
+    data[slot]["filename"] = ""
+    save_data(data)
+    
+    flash(f"Removed video for {slot} successfully!", "success")
+    return redirect(url_for('admin'))
+
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    # Enable debug locally for auto-reloading templates, but disable it on Render.com
+    is_render = os.environ.get('RENDER') is not None
+    app.run(host='0.0.0.0', port=port, debug=not is_render)

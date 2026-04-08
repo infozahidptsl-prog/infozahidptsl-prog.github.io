@@ -205,13 +205,21 @@
                 <button type="submit" class="btn">Save & Upload</button>
             </form>
             
-            <div class="current-video">
+            <div class="current-video" style="justify-content: space-between;">
+                <div>
+                    {% if details.url %}
+                    <span class="status-indicator status-active"></span>
+                    <strong>Current:</strong> {{ details.filename or "Uploaded Video" }}
+                    {% else %}
+                    <span class="status-indicator status-none"></span>
+                    <strong>Status:</strong> No video uploaded yet.
+                    {% endif %}
+                </div>
+                
                 {% if details.url %}
-                <span class="status-indicator status-active"></span>
-                <strong>Current:</strong> {{ details.filename or "Uploaded Video" }}
-                {% else %}
-                <span class="status-indicator status-none"></span>
-                <strong>Status:</strong> No video uploaded yet.
+                <form action="{{ url_for('remove', slot=slot) }}" method="POST" style="margin: 0;" onsubmit="return confirm('Are you sure you want to delete this video?');">
+                    <button type="submit" class="btn outline" style="color: var(--danger); border-color: var(--danger); padding: 0.4rem 0.8rem; font-size: 0.85rem;">Remove Video</button>
+                </form>
                 {% endif %}
             </div>
         </div>
