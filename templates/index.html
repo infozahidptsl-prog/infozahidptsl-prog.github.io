@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prime Video Ad Showcase</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>Premium Ad Showcase</h1>
+            <p>Digital Advertising Placements</p>
+        </header>
+
+        <main class="showcase-grid">
+            {% for slot, details in data.items() %}
+            <div class="video-card">
+                <div class="video-wrapper" style="width: {{ slot.split('x')[0] }}px; height: {{ slot.split('x')[1] }}px;">
+                    {% if details.url %}
+                    <video 
+                        id="video-{{ loop.index }}" 
+                        class="promo-media"
+                        width="{{ slot.split('x')[0] }}" 
+                        height="{{ slot.split('x')[1] }}"
+                        playsinline
+                        controls
+                        controlsList="nofullscreen"
+                        preload="metadata">
+                        <source src="{{ details.url }}#t=0.001" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    {% else %}
+                    <div class="placeholder">
+                        <p>No video uploaded for {{ slot }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="video-info">
+                    <p class="description">{{ details.description }}</p>
+                    {% if details.url %}
+                    <a href="{{ details.url }}" download="{{ details.description }}.mp4" class="download-link">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Download
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </main>
+        
+        <footer>
+        </footer>
+    </div>
+    
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
